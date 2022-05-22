@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,11 +38,17 @@ public class CrudController {
 
     @PutMapping(path = "/update/{id}")
     public @ResponseBody ResponseEntity<User> updateUser(@RequestParam String name,
-            @RequestParam String email, @PathVariable Integer id) {
+            @RequestParam String email, @PathVariable("id") Integer id) {
         User userFromDb = userRepository.findById(id).get();
         userFromDb.setName(name);
         userFromDb.setEmail(email);
         userRepository.save(userFromDb);
         return new ResponseEntity<>(userFromDb, HttpStatus.OK);
+    }
+
+    @DeleteMapping(path = "/delete/{id}")
+    public ResponseEntity<User> deleteUser(@PathVariable("id") Integer id) {
+        userRepository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
